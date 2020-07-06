@@ -10,6 +10,10 @@ Requirements
 
 - Docker Desktop for Mac or Windows or Docker for Linux
 
+```shell
+pip install molecule yamllint ansible-lint docker
+```
+
 Role Variables
 --------------
 

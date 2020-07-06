@@ -18,7 +18,5 @@ provisioner:
   name: ansible
 verifier:
   name: ansible
-  vars:
-    cluster_name: molecule
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
