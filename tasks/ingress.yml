@@ -1,0 +1,29 @@
+---
+- name: Add stable chart Repo
+  helm_repository:
+    name: stable
+    repo_url: https://kubernetes-charts.storage.googleapis.com
+  ignore_errors: True
+- name: Create Ingress namespace
+  k8s:
+    kind: Namespace
+    name: ingress-nginx
+    state: present
+  when: ingress
+- name: Install Ingress
+  helm:
+    chart_ref: stable/nginx-ingress
+    update_repo_cache: True
+    values:
+      controller.nodeSelector.nginx: 'ingresshost'
+      rbac.create: "true"
+      controller.image.pullPolicy: 'Always'
+      controller.extraArgs.enable-ssl-passthrough: ''
+      controller.stats.enabled: "true"
+      controller.service.type: 'ClusterIP'
+      controller.kind: 'DaemonSet'
+      controller.daemonset.useHostPort: true
+    wait: True
+    state: present
+    namespace: ingress-nginx
+    name: ingress-nginx

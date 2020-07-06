@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: localhost
+  connection: local
+
+  collections:
+    - community.kubernetes
+
+  roles:
+    - role: kameshsampath.kind

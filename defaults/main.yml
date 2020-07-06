@@ -1,0 +1,12 @@
+---
+cluster_name: kind
+kind_config_dir: '{{ansible_env.HOME}}/.kind'
+custom_registry: True
+container_registry_name: 'kind-registry'
+container_registry_port: 5000
+knative: False
+ingress: True
+tekton: False
+extra_port_mappings:
+  - '0.0.0.0:80:80'
+  - '0.0.0.0:443:443'
