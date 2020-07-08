@@ -16,13 +16,10 @@ provisioner:
   scenario:
     test_sequence:
       - lint
-      - destroy
       - syntax
-      - prepare
       - converge
       - idempotence
       - verify
-      - destroy
 verifier:
   name: ansible
   playbooks:

@@ -1,11 +1,7 @@
 ---
-- name: Chant
-  debug:
-    msg: "Jai Guru!"
-- name: Check if already exists
+- name: "Check if {{cluster_name}} already exists"
   docker_container_info:
     name: "{{ cluster_name + '-control-plane' }}"
-  when: cluster_config is not defined
 - name: Check if already exists
   docker_container_info:
     name: "{{ cluster_name + '-control-plane' }}"
@@ -21,10 +17,12 @@
       - '{{container_registry_port}}:5000'
 - name: Create KinD Config
   template:
-    dest: '{{kind_home_dir}}/kind-cluster-config.yaml'
-    src: '{{kind_home_dir}}/kind-cluster-config.yaml.j2'
+    dest: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config}}"
+    src: 'kind-cluster-config.yml.j2'
     mode: "755"
-  when: cluster_config is not defined
+- name: "Set {{cluster_name}} config file"
+  set_fact:
+    kind_cluster_config_file: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config}}"
 - name: "Start KinD Cluster: '{{cluster_name}}'"
   command:
     argv:
@@ -32,7 +30,7 @@
       - create
       - cluster
       - --name={{cluster_name}}
-      - --config={{kind_home_dir}}/kind-cluster-config.yaml
+      - --config={{kind_cluster_config_file}}
   register: kind_cluster_result
   when: (cluster_config is not defined and not cluster_check_result.exists)
 - name: "Get KinD Cluster: '{{cluster_name}}' Cluster Nodes"
@@ -43,6 +41,7 @@
       - nodes
       - --name={{cluster_name}}
   register: cluster_nodes_result
+  changed_when: False
 - set_fact:
     cluster_nodes: "{{ cluster_nodes_result.stdout.split('\n') }}"
 - name: "Label KinD Cluster: '{{cluster_name}}' Cluster Nodes"
@@ -59,7 +58,7 @@
   loop: '{{cluster_nodes}}'
   when: kind_cluster_result is defined
 
-- name: Search for all worker nodes
+- name: Get all worker nodes
   k8s_info:
     kind: Node
     label_selectors:

@@ -14,6 +14,7 @@
   loop:
     - "{{kind_home_dir}}"
     - "{{kind_home_dir}}/bin"
+    - "{{kind_home_dir}}/{{cluster_name}}"
 
 - name: Check if KinD is installed
   command:

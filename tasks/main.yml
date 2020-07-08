@@ -15,5 +15,5 @@
 # Destroy
 ###################################
 - name: 'Destroy KinD {{cluster_name}} Cluster'
-  include_tasks: create.yml
+  include_tasks: destroy.yml
   when: kind_destroy

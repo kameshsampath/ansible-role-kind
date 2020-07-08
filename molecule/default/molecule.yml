@@ -4,22 +4,28 @@ dependency:
   options:
     requirements-file: molecule/common/requirements.yml
 driver:
-  name: docker
+  name: delegated
+  options:
+    managed: False
+    ansible_connection_options:
+      ansible_connection: local
 lint: |
   set -e
   yamllint .
 # TODO #1 need fix  - not working OOTB  ansible-lint
 platforms:
-  - name: molecule-kind
-    dockerfile: molecule/commons/Dockerfile.j2
-    image: quay.io/kameshsampath/ansible-kubernetes-centos8
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    pull: False
-    privileged: True
+  - name: molecule-kind-create
 provisioner:
   name: ansible
+  scenario:
+    test_sequence:
+      - lint
+      - syntax
+      - converge
+      - idempotence
+      - verify
 verifier:
   name: ansible
   playbooks:
-    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}   
+  

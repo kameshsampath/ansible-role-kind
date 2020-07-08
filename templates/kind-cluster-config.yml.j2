@@ -1,20 +1,23 @@
+#jinja2: lstrip_blocks: "True"
 ---
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
 - role: worker
-    extraPortMappings:
-  {%for m in extra_port_mappings.split(':') %}
-    - containerPort: {{m[2]}}
-    hostPort: {{m[1]}
-    listenAddress: {{m[0]}
-  {%endfor%}
+{% if ingress %}
+  extraPortMappings:
+  {% for m in extra_port_mappings %}
+    - containerPort: {{ m.split(':')[2] }}
+      hostPort: {{ m.split(':')[1] }}
+      listenAddress: {{ m.split(':')[0] }}
+  {% endfor %}
 containerdConfigPatches:
-{%if custom_registry %}
-- |-
-    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:{{container_registry_port}}"]
-    endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
-    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{container_registry_name}}:{{container_registry_port}}"]
-    endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
-{%endif%}
+{% if kind_custom_registry %}
+  - |-
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:{{container_registry_port}}"]
+      endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{container_registry_name}}:{{container_registry_port}}"]
+      endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
+{% endif %}
+{% endif %}
