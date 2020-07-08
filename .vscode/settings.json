@@ -1,0 +1,7 @@
+{
+  "json.schemas": [],
+  "files.associations": {
+    "**/Dockerfile.j2": "dockerfile",
+    "**/*.yml": "ansible"
+  },
+}

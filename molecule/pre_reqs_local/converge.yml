@@ -8,7 +8,9 @@
 
   vars:
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    kind_home_dir: "/tmp/kind_test"
     ingress: False
+    kind_create: False
 
   roles:
     - role: kameshsampath.kind

@@ -1,0 +1,18 @@
+---
+- name: prepare test env
+  import_playbook: prepare.yml
+  
+- name: Converge
+  hosts: all
+  become: true
+
+  collections:
+    - community.kubernetes
+
+  vars:
+    ansible_python_interpreter: '/usr/bin/python3'
+    ingress: False
+    kind_create: False
+  
+  roles:
+    - role: kameshsampath.kind

@@ -1,19 +1,22 @@
 ---
 dependency:
   name: galaxy
+  options:
+    requirements-file: molecule/common/requirements.yml
 driver:
   name: docker
 lint: |
   set -e
   yamllint .
-  ansible-lint
+# TODO #1 need fix  - not working OOTB  ansible-lint
 platforms:
   - name: molecule-kind
-    image: geerlingguy/docker-centos8-ansible:latest
+    dockerfile: molecule/commons/Dockerfile.j2
+    image: quay.io/kameshsampath/ansible-kubernetes-centos8
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    pre_build_image: true
-    privileged: true
+    pull: False
+    privileged: True
 provisioner:
   name: ansible
 verifier:

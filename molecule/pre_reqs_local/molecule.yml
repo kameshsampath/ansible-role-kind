@@ -1,0 +1,30 @@
+---
+driver:
+  name: delegated
+  options:
+    managed: False
+    ansible_connection_options:
+      ansible_connection: local
+lint: |
+  set -e
+  yamllint .
+# TODO #1 need fix  - not working OOTB  ansible-lint
+platforms:
+  - name: molecule-kind-prereqs-local
+provisioner:
+  name: ansible
+  scenario:
+    test_sequence:
+      - lint
+      - destroy
+      - syntax
+      - prepare
+      - converge
+      - idempotence
+      - verify
+      - destroy
+verifier:
+  name: ansible
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}   
+  
