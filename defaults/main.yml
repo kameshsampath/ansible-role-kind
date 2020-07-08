@@ -8,9 +8,9 @@ kind_cluster_config: "kind-cluster-config.yml"
 kind_custom_registry: True
 container_registry_name: 'kind-registry'
 container_registry_port: 5000
-knative: False
-ingress: True
-tekton: False
+deploy_knative: False
+deploy_ingress: True
+deploy_tekton: False
 extra_port_mappings:
   - '0.0.0.0:80:80'
   - '0.0.0.0:443:443'

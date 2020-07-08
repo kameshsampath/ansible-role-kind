@@ -5,7 +5,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
 - role: worker
-{% if ingress %}
+{% if deploy_ingress %}
   extraPortMappings:
   {% for m in extra_port_mappings %}
     - containerPort: {{ m.split(':')[2] }}

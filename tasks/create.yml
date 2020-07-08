@@ -2,11 +2,8 @@
 - name: "Check if {{cluster_name}} already exists"
   docker_container_info:
     name: "{{ cluster_name + '-control-plane' }}"
-- name: Check if already exists
-  docker_container_info:
-    name: "{{ cluster_name + '-control-plane' }}"
   register: cluster_check_result
-- name: Start KinD Registry
+- name: Create and start KinD Registry
   docker_container:
     state: started
     image: 'registry:2'
@@ -81,4 +78,4 @@
 ###################################
 - name: Configure Ingress
   include_tasks: ingress.yml
-  when: ingress 
+  when: deploy_ingress 
