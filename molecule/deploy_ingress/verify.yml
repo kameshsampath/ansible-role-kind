@@ -35,7 +35,48 @@
        that: "(item.status.availableReplicas == item.status.replicas) and ((item.status.availableReplicas == item.status.readyReplicas))"
      with_items: 
       - "{{ingress_deployments.resources}}"
-        
+
+   - name: Create Test namespace
+     k8s:
+       kind: Namespace
+       name: molecule-ingress-test
+       state: present
+
+   - name: Deploy Test App myApp
+     k8s:
+      state: present
+      namespace: molecule-ingress-test
+      definition: "{{lookup('file','../common/myapp/deployment.yaml')}}"        
+      wait: yes
+      wait_sleep: 5
+      wait_timeout: 180
+
+   - name: Deploy Test Service myApp
+     k8s:
+      state: present
+      namespace: molecule-ingress-test
+      definition: "{{lookup('file','../common/myapp/service.yaml')}}"  
+       
+   - name: Deploy Test Ingress myApp 
+     k8s:
+      state: present
+      namespace: molecule-ingress-test
+      definition: "{{lookup('file','../common/myapp/ingress.yaml')}}" 
+      wait: yes
+      wait_sleep: 5
+      wait_timeout: 180
+
+   - name: Invoke the myApp Service 
+     uri:
+      url: http://localhost/api/hello
+      return_content: yes
+     register: hello_response
+
+   - debug: msg="{{hello_response}}"
+
+   - name: Verify right reponse received
+     assert:
+       that: "'Hello World!' == hello_response.content"
 
 - name: Destroy test resources
   import_playbook: destroy.yml

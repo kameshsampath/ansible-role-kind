@@ -37,32 +37,15 @@ Role Variables
 | container_registry_port | The container registry port | 5000 |
 | deploy_knative | Deploy Knative | False |
 | deploy_ingress | Deploy Ingress | True |
-| deploy_tekton  | Deploy Tekton  | False |
+| ingress_namespace | The namespace for Contour Ingress | contour-system |
+| ingress_namespace | The namespace for Contour Ingress | contour-system |
+| ingress_manifest  | The Contour Ingress manifest file  | https://projectcontour.io/quickstart/contour.yaml |
 |extra_port_mappings| Extra Port Mappings for KinD. A YAML list of format `listen-address:hostPort:containerPort` | '0.0.0.0:80:80', '0.0.0.0:443:443' |
 
 
-Example Playbook
+Example Playbooks
 ----------------
-
-The following playbook creates an one master and one worker KinD cluster with Nginx Ingress Controller deployed.
-
-```YAML
----
-- name: Converge
-  hosts: localhost
-  connection: local
-
-  collections:
-    - community.kubernetes
-
-  vars:
-    ansible_python_interpreter: '{{ ansible_playbook_python }}'
-    cluster_name: demo
-    ingress: True
-
-  roles:
-    - role: kameshsampath.kind
-```
+The [examples](./examples) directory has various playbook examples to get started
 
 License
 -------
