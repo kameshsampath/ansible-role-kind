@@ -10,6 +10,8 @@ container_registry_name: 'kind-registry'
 container_registry_port: 5000
 deploy_knative: False
 deploy_ingress: True
+ingress_namespace: contour-system
+ingress_manifest: https://projectcontour.io/quickstart/contour.yaml
 deploy_tekton: False
 extra_port_mappings:
   - '0.0.0.0:80:80'

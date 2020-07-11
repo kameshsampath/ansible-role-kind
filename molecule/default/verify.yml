@@ -16,47 +16,7 @@
 
   tasks:
 
-  - name: Get if KinD is installed
-    stat:
-      path: "/usr/local/bin/kind"
-    register: kind_dir_result
-  
-  # - debug: msg="{{kind_dir_result}}"
-
-  - name: Verify KinD home directory exists
-    assert:
-      that: "{{ kind_dir_result.stat.exists and kind_dir_result.stat.executable }}"
-
-  - name: Get if KinD Config exists
-    stat:
-      path: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config}}"
-    register: kind_config_result
-
-  - name: Verify KinD home directory exists
-    assert:
-      that: "{{ kind_config_result.stat.exists }}"
-
-  - name: Get KinD Version
-    command:
-      argv:
-        - "{{kind_dir_result.stat.path}}"
-        - version
-    register: kind_version_out
-
-  - name: Verify KinD version
-    assert:
-      that: "{{ kind_version_out.stdout is regex('^kind ' + kind_version + '.*')}}"
-
-  - name: Verify Kubernetes Nodes
-    k8s_info:
-      kind: node
-    register: kind_nodes
-  
-  # - debug: msg="{{kind_nodes}}"
-
-  - name: Verify cluster has only two nodes a master and a worker
-    assert:
-      that: "{{ (kind_nodes.resources | count) == 2 }}"
+  - import_tasks: ../common/verify_tasks.yml
 
 - name: Destroy test resources
   import_playbook: destroy.yml

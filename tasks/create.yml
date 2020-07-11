@@ -76,6 +76,6 @@
 ###################################
 # Nginx Ingress
 ###################################
-- name: Configure Ingress
+- name: Deploy Ingress
   include_tasks: ingress.yml
   when: deploy_ingress 

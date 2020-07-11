@@ -1,0 +1,41 @@
+---
+- name: Verify
+  hosts: localhost
+  connection: local
+
+  collections:
+    - community.kubernetes
+    
+  vars:
+   ansible_python_interpreter: '{{ ansible_playbook_python }}'
+   cluster_name: molecule-ingress
+   kind_home_dir: /tmp/kind_test
+   kind_version: v0.8.1
+   kind_create: True
+   deploy_ingress: True
+   kind_cluster_config: "kind-cluster-config.yml"
+
+  tasks:
+   - import_tasks: ../common/tasks/verify.yml
+
+   - name: Get Ingress Deployments
+     k8s_info:
+        api_version: v1
+        kind: Deployment
+        namespace: ingress-nginx
+     register: ingress_deployments
+     when: deploy_ingress
+   
+  #  - debug: msg="{{item.status}}"
+  #    with_items: 
+  #     - "{{ingress_deployments.resources}}"
+           
+   - name: Ensure all Ingress Deployments are running
+     assert:
+       that: "(item.status.availableReplicas == item.status.replicas) and ((item.status.availableReplicas == item.status.readyReplicas))"
+     with_items: 
+      - "{{ingress_deployments.resources}}"
+        
+
+- name: Destroy test resources
+  import_playbook: destroy.yml

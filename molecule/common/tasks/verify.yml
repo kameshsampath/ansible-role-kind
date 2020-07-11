@@ -1,0 +1,42 @@
+---
+- name: Get KinD installed by playbook
+  stat:
+    path: '{{ansible_env.HOME}}/.kind/bin/kind'
+  register: kind_dir_result
+  when: ansible_connection != 'local'
+
+- name: Get pre-installed KinD
+  stat:
+    path: '/usr/local/bin/kind'
+  when: ansible_connection == 'local'
+  register: kind_dir_result
+
+# - debug: msg="{{kind_dir_result}}"
+
+- name: Verify KinD home directory exists
+  assert:
+    that: '{{ kind_dir_result.stat.exists and kind_dir_result.stat.executable }}'
+
+- name: Get KinD Version
+  command:
+    argv:
+      - '{{kind_dir_result.stat.path}}'
+      - version
+  register: kind_version_out
+  changed_when: False
+
+- name: Verify KinD version
+  assert:
+    that: "{{ kind_version_out.stdout is regex('^kind ' + kind_version + '.*')}}" 
+
+- name: Get Kubernetes Nodes
+  k8s_info:
+    kind: node
+  register: kind_nodes
+  when: kind_create
+
+  # - debug: msg="{{kind_nodes}}"
+- name: Verify cluster has only two nodes a master and a worker
+  assert:
+    that: '{{ (kind_nodes.resources | count) == 2 }}'
+  when: kind_create

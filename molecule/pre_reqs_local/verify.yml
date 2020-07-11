@@ -11,22 +11,4 @@
     kind_home_dir: "/tmp/kind_test"
     
   tasks:
-  - name: Check if KinD is installed
-    stat:
-      path: "/usr/local/bin/kind"
-    register: kind_dir_result
-  
-  # - debug: msg="{{kind_dir_result}}"
-
-  - name: Verify KinD home directory exists
-    assert:
-      that: "{{ kind_dir_result.stat.exists and kind_dir_result.stat.executable }}"
-  - name: Get KinD Version
-    command:
-      argv:
-        - "{{kind_dir_result.stat.path}}"
-        - version
-    register: kind_version_out
-  - name: Verify KinD version
-    assert:
-      that: "{{ kind_version_out.stdout is regex('^kind ' + kind_version + '.*')}}"
+   - import_tasks: ../common/tasks/verify.yml

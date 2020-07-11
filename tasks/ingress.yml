@@ -1,29 +1,26 @@
 ---
-- name: Add stable chart Repo
-  helm_repository:
-    name: stable
-    repo_url: https://kubernetes-charts.storage.googleapis.com
-  ignore_errors: True
-- name: Create Ingress namespace
-  k8s:
-    kind: Namespace
-    name: ingress-nginx
+- name: Get Contour Manifest
+  get_url:
+      dest: /tmp/contour.yml 
+      url: "{{ingress_manifest}}"
+
+- name: Update Contour namespace
+  replace:
+      path: /tmp/contour.yml 
+      regexp: '^(\s*)(name[space]*)?(:\s*)(projectcontour)\s*$'
+      replace: '\1\2\3{{ingress_namespace}}'
+
+- name: Deploy Contour
+  community.kubernetes.k8s:
+    definition: "{{ lookup('file', '/tmp/contour.yml') }}"
     state: present
-  when: ingress
-- name: Install Ingress
-  helm:
-    chart_ref: stable/nginx-ingress
-    update_repo_cache: True
-    values:
-      controller.nodeSelector.nginx: 'ingresshost'
-      rbac.create: "true"
-      controller.image.pullPolicy: 'Always'
-      controller.extraArgs.enable-ssl-passthrough: ''
-      controller.stats.enabled: "true"
-      controller.service.type: 'ClusterIP'
-      controller.kind: 'DaemonSet'
-      controller.daemonset.useHostPort: true
-    wait: True
-    state: present
-    namespace: ingress-nginx
-    name: ingress-nginx
+    wait: yes
+    wait_sleep: 5
+    wait_timeout: 180
+  register: contour_deploy
+  changed_when: False
+
+# - debug: msg="{{contour_deploy}}"
+
+
+   
