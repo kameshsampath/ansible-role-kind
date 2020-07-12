@@ -9,6 +9,9 @@ kind_custom_registry: True
 container_registry_name: 'kind-registry'
 container_registry_port: 5000
 deploy_knative: False
+knative_version: v0.16.0
+knative_eventing_version: v0.16.0
+knative_serving_version: v0.16.0
 deploy_ingress: True
 ingress_namespace: contour-system
 ingress_manifest: https://projectcontour.io/quickstart/contour.yaml

@@ -1,0 +1,24 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: molecule/common/requirements.yml
+driver:
+  name: delegated
+  options:
+    managed: False
+    ansible_connection_options:
+      ansible_connection: local
+lint: |
+  set -e
+  yamllint .
+# TODO #1 need fix  - not working OOTB  ansible-lint
+platforms:
+  - name: molecule-kind-knative
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}   
+  
