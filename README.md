@@ -36,6 +36,9 @@ Role Variables
 | container_registry_name | The container registry name | kind-registry |
 | container_registry_port | The container registry port | 5000 |
 | deploy_knative | Deploy Knative | False |
+| knative_version | The Knative version | v0.16.0 |
+| knative_serving_version | The Knative Serving version | v0.16.0 |
+| knative_eventing_version | The Knative Eventing version | v0.16.0 |
 | deploy_ingress | Deploy Ingress | True |
 | ingress_namespace | The namespace for Contour Ingress | contour-system |
 | ingress_namespace | The namespace for Contour Ingress | contour-system |
@@ -45,7 +48,7 @@ Role Variables
 
 Example Playbooks
 ----------------
-The [examples](./examples) directory has various playbook examples to get started
+The [examples](./examples) directory has various playbook examples to get started using this role
 
 License
 -------
