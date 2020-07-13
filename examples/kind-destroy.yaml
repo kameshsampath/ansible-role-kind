@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: localhost
+  connection: local
+
+  collections:
+    - community.kubernetes
+
+  vars:
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    kind_create: False
+    kind_destroy: True
+  roles:
+    - role: kameshsampath.kind

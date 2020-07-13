@@ -1,0 +1,29 @@
+---
+- name: Destroy 'deploy_knative' test resources
+  hosts: localhost
+  connection: local
+
+  vars:
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    cluster_name: molecule-knative
+    kind_home_dir: /tmp/kind_test
+    deploy_ingress: True
+    deploy_knative: True
+  tasks:
+    - name: "Delete KinD cluster {{cluster_name}}"
+      command:
+        argv:
+          - kind
+          - delete 
+          - cluster
+          - --name={{cluster_name}}
+      register: delete_test_res
+    - name: Fail when not cleaned 
+      fail:
+        msg: "Error while deleting test resources"
+      when: delete_test_res.rc != 0
+    - name: Remove KinD test home directory 
+      file:
+        path: "{{kind_home_dir}}"
+        state: absent
+      

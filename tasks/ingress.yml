@@ -1,14 +1,19 @@
 ---
 - name: Get Contour Manifest
   get_url:
-      dest: /tmp/contour.yml 
-      url: "{{ingress_manifest}}"
+    dest: /tmp/contour.yml 
+    url: "{{ingress_manifest}}"
+    force: no
 
 - name: Update Contour namespace
   replace:
       path: /tmp/contour.yml 
       regexp: '^(\s*)(name[space]*)?(:\s*)(projectcontour)\s*$'
       replace: '\1\2\3{{ingress_namespace}}'
+      backup: yes
+  register: updated_manifest
+  when: ingress_namespace != 'projectcontour'
+  changed_when: False
 
 - name: Deploy Contour
   community.kubernetes.k8s:
@@ -18,6 +23,15 @@
     wait_sleep: 5
     wait_timeout: 180
   register: contour_deploy
+  with_file:
+    - /tmp/contour.yml
+  changed_when: False
+
+- name: Revert Contour namespace update
+  copy:
+    dest: /tmp/contour.yml 
+    content: "{{ lookup('file', updated_manifest.backup_file)}}"
+  when: updated_manifest is defined and updated_manifest.backup_file is defined
   changed_when: False
 
 # - debug: msg="{{contour_deploy}}"

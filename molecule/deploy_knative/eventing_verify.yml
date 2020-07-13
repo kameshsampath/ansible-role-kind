@@ -1,0 +1,145 @@
+---
+- debug: msg="Knative Eventing Verification..."
+
+- name: Label namespace for Knative Eventing Injection
+  community.kubernetes.k8s:
+    apply: yes
+    force: yes
+    definition:      
+      kind: Namespace    
+      metadata:
+        name: molecule-knative-test
+        labels:
+          eventing.knative.dev/injection: enabled
+    state: present
+
+- name: Deploy default Broker
+  community.kubernetes.k8s:
+    state: present
+    definition:
+       apiVersion: eventing.knative.dev/v1
+       kind: Broker
+       metadata:
+         name: default
+         namespace: molecule-knative-test
+    wait: yes
+    wait_condition:
+      type: Addressable
+      status: yes
+  register: default_broker
+
+- name: Deploy a Knative Eventing hello-display app
+  community.kubernetes.k8s:
+    state: present
+    definition: 
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: hello-display
+        namespace: molecule-knative-test
+      spec:
+        replicas: 1
+        selector:
+          matchLabels: &labels
+            app: hello-display
+        template:
+          metadata:
+            labels: *labels
+          spec:
+            containers:
+              - name: event-display
+                image: gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display
+    wait: yes
+
+- name: Deploy a Knative Eventing hello-display service
+  community.kubernetes.k8s:
+    state: present
+    definition: 
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: hello-display
+        namespace: molecule-knative-test
+      spec:
+        selector:
+          app: hello-display
+        ports:
+          - protocol: TCP
+            port: 80
+            targetPort: 8080
+    wait: yes
+
+- name: Get Deployment hello-display
+  community.kubernetes.k8s_info:
+    kind: Deployment
+    name: hello-display
+    namespace: molecule-knative-test
+  register: deployment_hellodisplay
+
+- name: Verify hello-display has correct number of replicas
+  assert:
+    that: "(item.status.replicas == 1 ) and (item.status.availableReplicas == item.status.replicas) and ((item.status.readyReplicas == 1))"
+  with_items: 
+  - "{{deployment_hellodisplay.resources}}"
+
+- name: Create Greeting Trigger
+  community.kubernetes.k8s:
+    state: present
+    definition:
+       apiVersion: eventing.knative.dev/v1
+       kind: Trigger
+       metadata:
+         name: default
+         namespace: molecule-knative-test
+       spec:
+          broker: default
+          filter:
+            attributes:
+              type: greeting
+          subscriber:
+            ref:
+              apiVersion: v1
+              kind: Service
+              name: hello-display
+    wait: yes
+    wait_condition:
+      type: SubscriptionReady
+      status: yes
+
+- name: Create Event Producer
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        labels:
+          run: curl
+        name: curl
+        namespace: molecule-knative-test
+      spec:
+        containers:
+        - image: radial/busyboxplus:curl
+          imagePullPolicy: IfNotPresent
+          name: curl
+          resources: {}
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          tty: true
+    wait: yes
+
+# - debug: msg="{{default_broker}}"
+
+- name: Send Greeting event
+  community.kubernetes.k8s_exec:
+    namespace: molecule-knative-test
+    pod: curl
+    command: "{{ lookup('template','send-event.j2') }}"
+  register: result
+    
+- debug: msg="{{result}}"
+
+- name: Verify message sent successfully 
+  assert:
+      that: "{{ result.stderr_lines is defined and  '< HTTP/1.1 202 Accepted' in result.stderr_lines }}"

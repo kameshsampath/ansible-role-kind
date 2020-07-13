@@ -1,0 +1,113 @@
+---
+- name: Deploy a Knative Service myApp
+  k8s:
+    state: present
+    definition:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      metadata:
+        name: myapp
+        namespace: molecule-knative-test
+      spec:
+        template:
+          metadata:
+            labels:
+              app: myapp
+          spec:
+            containers:
+              - image: quay.io/kameshsampath/quarkus-helloworld
+    wait: yes
+    wait_condition:
+      status: yes
+      type: RoutesReady
+    
+- name: Get Knative Service myApp
+  k8s_info:
+    api_version: serving.knative.dev/v1
+    kind: Service
+    name: myapp
+    namespace: molecule-knative-test
+  register: ksvc_myapp
+
+#-  debug: msg="{{ksvc_myapp}}"
+
+- name: Verify right reponse received
+  assert:
+    that: "{{ (ksvc_myapp.resources|count) == 1}}"
+
+- name: Get Deployment for Knative myApp
+  k8s_info:
+    kind: Deployment
+    name: myapp
+    namespace: molecule-knative-test
+  register: deployment_myapp
+
+- name: Verify myApp has correct number of replicas
+  assert:
+    that: "(item.status.replicas == 1 ) and (item.status.availableReplicas == item.status.replicas) and ((item.status.readyReplicas == 2))"
+  with_items: 
+  - "{{deployment_myapp.resources}}"
+
+- name: Invoke the myApp Knative Service 
+  uri:
+    url: "{{ item.status.url + '/api/hello' }}"
+    return_content: yes
+  with_items: 
+  - "{{ksvc_myapp.resources}}"
+  register: hello_response
+
+#  - name: "KSVC Sevice Response"
+#    debug: msg="{{hello_response.results[0]}}"
+
+- name: Verify right reponse received
+  assert:
+    that: "'Hello World!' == hello_response.results[0].content"
+
+- name: Make the ksvc to scale down to zero
+  pause:
+    seconds: 70
+
+- name: Get Deployment for Knative myApp
+  k8s_info:
+    kind: Deployment
+    name: myapp
+    namespace: molecule-knative-test
+  register: deployment_myapp
+
+- name: Ensure myApp deployment is running correctly
+  assert:
+    that: "item.status.replicas == 1 and item.status.readyReplicas == 0"
+  with_items: 
+  - "{{deployment_myapp.resources}}"
+
+- name: Invoke Knative Service myApp again to wake it up
+  uri:
+    url: "{{ item.status.url + '/api/hello' }}"
+    return_content: yes
+  with_items: 
+  - "{{ksvc_myapp.resources}}"
+
+- name: Give few seconds for service to warm up
+  pause:
+    seconds: 5
+
+- name: Get Deployment for Knative myApp again
+  k8s_info:
+    kind: Deployment
+    name: myapp
+    namespace: molecule-knative-test
+  register: deployment_myapp
+
+- name: Ensure myApp deployment is scaled up  correctly
+  assert:
+    that: "(item.status.replicas == 1 ) and (item.status.availableReplicas == item.status.replicas) and ((item.status.readyReplicas == 2))"
+  with_items: 
+  - "{{deployment_myapp.resources}}"
+
+- name: Delete Knative Service myApp
+  k8s:
+    api_version: serving.knative.dev/v1
+    kind: Service
+    name: myapp
+    namespace: molecule-knative-test
+    state: absent
