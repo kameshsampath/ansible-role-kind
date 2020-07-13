@@ -1,20 +1,20 @@
 Kind
 =========
 
-Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. The role can also be configured to install and configure
+Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. The role can also be configured to install and configure:
 
-[*] [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour)
+- [x] Default [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour)
 
-[*] [Knative](https://knative.dev)
+- [x] [Knative](https://knative.dev), both Serving and Eventing
 
-[ ] [Tekton](https://tekton.dev)
+- [ ] [Tekton](https://tekton.dev)
 
 Requirements
 ------------
 
 - Docker Desktop or Docker/Podman for Linux
 
-- Ansible
+- Ansible >= v2.9.10 
 
 ```shell
 pip3 install -U -r requirements.txt
@@ -54,12 +54,17 @@ The [examples](./examples) directory has various playbook examples to get starte
 License
 -------
 
-Apache v2
+[Apache v2](./LICENSE)
 
 Author Information
 ------------------
 
 [Kamesh Sampath](mailto:kamesh.sampath@hotmail.com)
+
+Issues
+=======
+
+[Issues](https://github.com/kameshsampath/ansible-role-kind/issues)
 
 Testing
 =======
@@ -68,10 +73,10 @@ Requirements
 ------------
 
 ```shell
-pip install molecule yamllint ansible-lint docker
+pip3 install molecule yamllint ansible-lint docker
 ```
 
-All tests are built using [molecule](pre_reqs_local) with following scenarios
+All tests are built using [molecule](https://molecule.readthedocs.io/en/latest/index.html) with following scenarios:
 
 * default 
 ```shell
@@ -79,10 +84,16 @@ molecule test
 ```
 * pre_reqs
 ```shell
-molecule pre_reqs
+molecule test -s pre_reqs
 ```
 * pre_reqs_local
 ```shell
-molecule pre_reqs_local
+molecule test  -s pre_reqs_local
+```
+
+
+* Knative
+```shell
+molecule test  -s deploy_knative
 ```
 
