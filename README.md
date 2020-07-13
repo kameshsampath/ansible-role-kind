@@ -3,11 +3,11 @@ Kind
 
 Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. The role can also be configured to install and configure
 
-- [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)
-- [Knative](https://knative.dev)
-- [Tekton](https://tekton.dev)
+[*] [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour)
 
-IMPORTANT: Work in Progress
+[*] [Knative](https://knative.dev)
+
+[ ] [Tekton](https://tekton.dev)
 
 Requirements
 ------------
@@ -18,8 +18,9 @@ Requirements
 
 ```shell
 pip3 install -U -r requirements.txt
-ansible-galaxy collections install community.kubernetes
+ansible-galaxy collections install -r requirements.yml
 ```
+__NOTE__: For Windows its recommended to use Windows Subsystem for Linux (WSL)
 
 Role Variables
 --------------
