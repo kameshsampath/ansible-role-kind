@@ -23,10 +23,8 @@ Requirements
 ```shell
 pip3 install -U \
   -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.txt
-ansible-galaxy roles install \
-  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.yml
-ansible-galaxy install collections install \
-  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.yml
+ansible-galaxy role install kameshsampath.kind
+ansible-galaxy collection install community.kubernetes
 ```
 __NOTE__: For Windows its recommended to use Windows Subsystem for Linux (WSL)
 
