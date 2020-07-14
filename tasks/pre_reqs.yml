@@ -13,7 +13,6 @@
     name: "{{item}}"
   loop:
     - "{{kind_home_dir}}"
-    - "{{kind_home_dir}}/bin"
     - "{{kind_home_dir}}/{{cluster_name}}"
 
 - name: Check if KinD is installed
@@ -43,8 +42,9 @@
 - name: Download KinD binary
   get_url:
     url: "{{kind_download_binary}}"
-    dest: "{{kind_home_dir}}/bin/kind"
+    dest: "/usr/local/bin/kind"
     mode: "0755"
+  become: yes
   when: kind_result.rc != 0
   register: downloaded_kind
 

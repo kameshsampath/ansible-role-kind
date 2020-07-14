@@ -1,14 +1,7 @@
 ---
-- name: Get KinD installed by playbook
+- name: Get installed KinD
   stat:
-    path: '{{ansible_env.HOME}}/.kind/bin/kind'
-  register: kind_dir_result
-  when: ansible_connection != 'local'
-
-- name: Get pre-installed KinD
-  stat:
-    path: '/usr/local/bin/kind'
-  when: ansible_connection == 'local'
+    path: /usr/local/bin/kind
   register: kind_dir_result
 
 # - debug: msg="{{kind_dir_result}}"

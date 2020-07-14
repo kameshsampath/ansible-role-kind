@@ -1,14 +1,32 @@
 galaxy_info:
   role_name: kind
   author: kameshsampath
-  description: Ansible role to install KinD
+  description: Ansible role to install KinD and spice it up with additional components like Knative, Tekton , Ingress etc.,
 
   license: 'license(Apache-2)'
 
   min_ansible_version: 2.9
 
+  platforms:
+    platforms:
+    - name: EL
+      versions:
+      - all
+    - name: Debian
+      versions:
+      - all
+    - name: Ubuntu
+      versions:
+      - all
+    - name: Darwin
+      versions:
+      - all 
+  
   galaxy_tags:
     - kind
     - kubernetes
     - docker
+    - knative
+    - tekton
+    - contour
 dependencies: []

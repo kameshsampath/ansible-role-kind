@@ -1,9 +1,13 @@
-Kind
-=========
+Ansible role for KinD
+=====================
 
-Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. The role can also be configured to install and configure:
+Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. 
 
-- [x] Default [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour)
+The role can also be used to install and configure:
+
+- [x] Default [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour) for KinD
+
+- [x] Deploys a local container registry
 
 - [x] [Knative](https://knative.dev), both Serving and Eventing
 
@@ -12,13 +16,17 @@ Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. The role can also be
 Requirements
 ------------
 
-- Docker Desktop or Docker/Podman for Linux
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) or Docker/Podman for Linux
 
-- Ansible >= v2.9.10 
+- [Ansible](https://ansible.com) >= v2.9.10 
 
 ```shell
-pip3 install -U -r requirements.txt
-ansible-galaxy collections install -r requirements.yml
+pip3 install -U \
+  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.txt
+ansible-galaxy roles install \
+  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.yml
+ansible-galaxy install collections install \
+  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.yml
 ```
 __NOTE__: For Windows its recommended to use Windows Subsystem for Linux (WSL)
 
