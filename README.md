@@ -55,12 +55,12 @@ Role Variables
 
 Example Playbooks
 ----------------
-The [examples](./examples) directory has various playbook examples to get started using this role
+The [examples](https://github.com/kameshsampath/ansible-role-kind/tree/master/examples) directory has various playbook examples to get started using this role
 
 License
 -------
 
-[Apache v2](./LICENSE)
+[Apache v2](https://github.com/kameshsampath/ansible-role-kind/tree/master/LICENSE)
 
 Author Information
 ------------------
