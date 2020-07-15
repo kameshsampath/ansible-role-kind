@@ -26,4 +26,5 @@ provisioner:
 verifier:
   name: ansible      
   playbooks:
-    converge: ${MOLECULE_PLAYBOOK:-converge.yml}   
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+    cleanup: cleanup.yml

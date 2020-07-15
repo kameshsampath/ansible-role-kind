@@ -5,12 +5,14 @@
 
   vars:
     install_collections: True
-    #ansible_python_interpreter: /usr/bin/python3
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
   
   tasks:
-    - name: "Connection Verify"
-      debug: msg="Jai Guru!"
+    - name: "Add Extra Packages"
+      pip:
+        name: ["openshift", "kubernetes", "jmespath", "docker >= 2.6"]
+        state: present
+        extra_args: --user
 
     - name: "Add Docker Repo"
       get_url:

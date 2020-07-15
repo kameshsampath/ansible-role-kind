@@ -1,0 +1,16 @@
+- name: Destroy
+  hosts: localhost
+  connection: local
+  tasks:
+
+   - name: Destroy vagrant molecule vm
+     command:
+       argv:
+          - vagrant
+          - destroy
+          - --force
+     register: vdown
+
+   - fail: 
+      msg: Unable to destroy vm
+     when: vdown is defined and vdown.rc != 0

@@ -1,0 +1,15 @@
+- name: Create
+  hosts: localhost
+  connection: local
+  tasks:
+
+   - name: Build vagrant molecule vm
+     command:
+       argv:
+          - vagrant
+          - up
+     register: vup
+
+   - fail: 
+      msg: Unable to start vm
+     when: vup.rc != 0

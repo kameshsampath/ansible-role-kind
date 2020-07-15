@@ -99,9 +99,15 @@ molecule test -s pre_reqs
 molecule test  -s pre_reqs_local
 ```
 
-
 * Knative
 ```shell
 molecule test  -s deploy_knative
+```
+* Clean machine Test
+
+This test run on clean vm (Centos8) using vagrant. It will run all the tests end to end and verify the same.
+
+```shell
+molecule test  -s vm
 ```
 
