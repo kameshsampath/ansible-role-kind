@@ -1,12 +1,4 @@
 ---
-- name: Install essential python packages
-  pip:
-    state: latest
-    name: '{{item}}'
-  loop:
-    - openshift
-    - jmespath
-
 - name: Create KinD Home Dir
   file:
     state: directory 
@@ -39,6 +31,14 @@
       kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{kind_version}}/kind-windows-amd64"
   when: kind_result.rc != 0 and ansible_os_family == "Windows"
 
+- name: Create user local bin directory 
+  file:
+    path: /usr/local/bin
+    state: directory
+  become: yes
+  become_user: root
+  when: kind_result.rc != 0
+
 - name: Download KinD binary
   get_url:
     url: "{{kind_download_binary}}"
@@ -48,13 +48,6 @@
   when: kind_result.rc != 0
   register: downloaded_kind
 
-- name: Add KinD bin dir to linux system-wide '$PATH'
-  copy:
-    dest: /etc/profile.d/kind-path.sh
-    content: 'export PATH={{kind_home_dir}}/bin:$PATH'
-  when: (ansible_os_family == "RedHat" or ansible_os_family == "CentOS" or ansible_os_family == "Debian") and (downloaded_kind is defined and not downloaded_kind.failed) 
-
-- name: Add KinD bin dir to Windows/macOS '$PATH'
-  debug:
-     msg: "To be able to use kind, add {{kind_home_dir}}/bin to your PATH"
-  when: (ansible_os_family == "Darwin" or  ansible_os_family == "Windows") and downloaded_kind is not defined
+- name: set kind binary fact
+  set_fact:
+    kind_binary: /usr/local/bin/kind

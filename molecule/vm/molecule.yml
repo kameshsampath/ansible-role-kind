@@ -1,0 +1,29 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: molecule/common/requirements.yml
+driver:
+  name: delegated
+  options:
+    managed: False
+    ansible_connection_options:
+      ansible_connection: ssh
+lint: |
+  set -e
+  yamllint .
+# TODO #1 need fix  - not working OOTB  ansible-lint
+platforms:
+  - name: molecule-vm
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: inventory/vagrant
+  config_options:
+    defaults:
+      host_key_checking: False    
+verifier:
+  name: ansible      
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}   

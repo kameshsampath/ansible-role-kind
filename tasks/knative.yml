@@ -16,6 +16,7 @@
   get_url:
       dest: "{{knative_manifests_dir}}" 
       url: "{{item}}"
+  delegate_to: localhost
   with_items:
     - "https://github.com/knative/serving/releases/download/{{knative_serving_version}}/serving-crds.yaml"
     - "https://github.com/knative/serving/releases/download/{{knative_serving_version}}/serving-core.yaml"

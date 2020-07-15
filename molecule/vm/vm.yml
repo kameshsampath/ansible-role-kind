@@ -1,0 +1,108 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: yes
+
+  vars:
+    install_collections: True
+    #ansible_python_interpreter: /usr/bin/python3
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+  
+  tasks:
+    - name: "Connection Verify"
+      debug: msg="Jai Guru!"
+
+    - name: "Add Docker Repo"
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        force: yes
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Upgrade all packages
+      dnf:
+        name: "*"
+        state: latest
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Install containerd.io from Centos7 repo
+      dnf:
+        name: 'https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm'
+        state: present
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Install Docker
+      dnf:
+        name: ["docker-ce"]
+        enablerepo: "docker-ce"
+        state: latest
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Enable and start docker
+      service:
+         name: docker
+         enabled: yes
+         state: started 
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Add vagrant to docker group
+      user:
+          name: vagrant 
+          append: yes
+          groups: 
+            - docker
+          state: present 
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Install Collections community.kubernetes
+      command:
+        argv:
+          - ansible-galaxy
+          - collection 
+          - install
+          - community.kubernetes
+      when: install_collections
+
+    - name: Whats latest kubectl version
+      uri:
+          url: https://storage.googleapis.com/kubernetes-release/release/stable.txt 
+          return_content: yes 
+      register: kubectl_version
+
+    - name: "Download kubectl {{kubectl_version.content}}"
+      get_url:
+         dest: /usr/local/bin/kubectl
+         mode: "0755"
+         url: "https://storage.googleapis.com/kubernetes-release/release/{{kubectl_version.content|replace('\n','')}}/bin/linux/amd64/kubectl"
+      become: yes
+      become_method: sudo
+      become_user: root
+        
+    - name: Add another bin dir to system-wide $PATH.
+      copy:
+        dest: /etc/profile.d/kubectl-path.sh
+        content: 'PATH=$PATH:/usr/local/bin/'
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: Get kubectl
+      stat:
+        path: /usr/local/bin/kubectl
+      register: kubectl
+
+    - fail:
+        msg: "kubectl is not executable, change permissions"
+      when: not kubectl.stat.executable

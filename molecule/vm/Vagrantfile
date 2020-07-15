@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$script = <<SCRIPT
+dnf install -y  epel-release
+dnf install -y 'dnf-command(config-manager)'
+dnf config-manager --set-enabled PowerTools
+dnf update -y
+dnf install -y curl wget gcc libffi-devel openssl-devel python3-cryptography python3-devel python3-setuptools
+sudo -u vagrant pip3 install --user ansible==2.9.10
+SCRIPT
+
+Vagrant.configure("2") do |config|
+ 
+  config.vm.box = "geerlingguy/centos8"
+
+  config.vm.provider "virtualbox" do |vb|
+     vb.cpus = 6
+     vb.memory = "8192"
+  end
+ 
+  config.vm.provision "shell", inline: $script
+
+  config.vm.provision "ansible_local" do |ansible|
+    # since ansible is installed in basebox, skip install
+    ansible.install = false
+    ansible.playbook = "vm.yml"
+  #  ansible.galaxy_command = "ansible-galaxy collection install community.kubernetes"
+  end 
+
+end

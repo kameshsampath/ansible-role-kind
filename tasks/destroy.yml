@@ -3,7 +3,7 @@
 - name: "Delete KinD cluster {{cluster_name}}"
   command:
     argv:
-      - kind
+      - "{{kind_binary}}"
       - delete 
       - cluster
       - --name={{cluster_name}}

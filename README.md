@@ -16,12 +16,12 @@ The role can also be used to install and configure:
 Requirements
 ------------
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) or Docker/Podman for Linux
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) or Docker for Linux
 
 - [Ansible](https://ansible.com) >= v2.9.10 
 
 ```shell
-pip3 install -U \
+pip3 install \
   -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.txt
 ansible-galaxy role install kameshsampath.kind
 ansible-galaxy collection install community.kubernetes
@@ -77,9 +77,11 @@ Testing
 
 Requirements
 ------------
-
+- [Vagrant](https://www.vagrantup.com)
+- Extra Python modules
 ```shell
-pip3 install molecule yamllint ansible-lint docker
+pip3 install \
+  -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/molecule/requirements.txt
 ```
 
 All tests are built using [molecule](https://molecule.readthedocs.io/en/latest/index.html) with following scenarios:

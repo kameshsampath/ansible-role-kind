@@ -1,5 +1,5 @@
 ---
-- name: 'Wait for Knative Serving {{deployment_name}}'
+- name: 'Wait for Deployment {{deployment_name}}'
   k8s_info:
     kind: Deployment
     name: '{{deployment_name}}'

@@ -3,15 +3,7 @@
   docker_container_info:
     name: "{{ cluster_name + '-control-plane' }}"
   register: cluster_check_result
-- name: Create and start KinD Registry
-  docker_container:
-    state: started
-    image: 'registry:2'
-    restart_policy: 'always'
-    name: '{{container_registry_name}}'
-    network_mode: kind
-    exposed_ports:
-      - '{{container_registry_port}}:5000'
+
 - name: Create KinD Config
   template:
     dest: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config}}"
@@ -23,7 +15,7 @@
 - name: "Start KinD Cluster: '{{cluster_name}}'"
   command:
     argv:
-      - kind
+      - "{{kind_binary}}"
       - create
       - cluster
       - --name={{cluster_name}}
@@ -33,7 +25,7 @@
 - name: "Get KinD Cluster: '{{cluster_name}}' Cluster Nodes"
   command:
     argv:
-      - kind
+      - "{{kind_binary}}"
       - get
       - nodes
       - --name={{cluster_name}}
@@ -41,6 +33,16 @@
   changed_when: False
 - set_fact:
     cluster_nodes: "{{ cluster_nodes_result.stdout.split('\n') }}"
+
+- name: Create and start KinD Registry
+  docker_container:
+    state: started
+    image: 'registry:2'
+    restart_policy: 'always'
+    name: '{{container_registry_name}}'
+    network_mode: kind
+    exposed_ports:
+      - '{{container_registry_port}}:5000'
 - name: "Label KinD Cluster: '{{cluster_name}}' Cluster Nodes"
   k8s:
     state: present

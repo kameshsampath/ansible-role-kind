@@ -3,7 +3,7 @@
   get_url:
     dest: /tmp/contour.yml 
     url: "{{ingress_manifest}}"
-    force: no
+  delegate_to: localhost
 
 - name: Update Contour namespace
   replace:
@@ -11,30 +11,44 @@
       regexp: '^(\s*)(name[space]*)?(:\s*)(projectcontour)\s*$'
       replace: '\1\2\3{{ingress_namespace}}'
       backup: yes
+  delegate_to: localhost
   register: updated_manifest
   when: ingress_namespace != 'projectcontour'
   changed_when: False
 
 - name: Deploy Contour
   community.kubernetes.k8s:
-    definition: "{{ lookup('file', '/tmp/contour.yml') }}"
+    definition: "{{ item.manifest | from_yaml_all | list }}"
     state: present
-    wait: yes
-    wait_sleep: 5
-    wait_timeout: 180
   register: contour_deploy
-  with_file:
-    - /tmp/contour.yml
+  loop:
+    - name: contour.yml
+      manifest: "{{ lookup('file','/tmp/contour.yml')}}"
+  loop_control:
+      label: "{{item.name}}"
   changed_when: False
+
+- name: 'Wait for Daemonset envoy to be ready'
+  k8s_info:
+    kind: DaemonSet
+    name: envoy
+    namespace: '{{ingress_namespace}}'
+  register: ds_result
+  until: ds_result.resources[0].status.numberReady == 1 and (ds_result.resources[0].status.numberAvailable == ds_result.resources[0].status.numberReady)
+  retries: 18
+  delay: 10
+
+- name: "Wait for Contour"
+  include_tasks: utils/k8s_deployment_status.yml
+  vars:
+    deployment_name: contour
+    deployment_namespace: "{{ingress_namespace}}"
 
 - name: Revert Contour namespace update
   copy:
     dest: /tmp/contour.yml 
-    content: "{{ lookup('file', updated_manifest.backup_file)}}"
+    src: "{{ updated_manifest.backup_file }}"
+  delegate_to: localhost
   when: updated_manifest is defined and updated_manifest.backup_file is defined
   changed_when: False
-
-# - debug: msg="{{contour_deploy}}"
-
-
    
