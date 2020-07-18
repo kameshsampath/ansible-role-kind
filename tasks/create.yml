@@ -41,8 +41,8 @@
     restart_policy: 'always'
     name: '{{container_registry_name}}'
     network_mode: kind
-    exposed_ports:
-      - '{{container_registry_port}}:5000'
+    published_ports:
+      - '0.0.0.0:{{container_registry_port}}:5000'
 - name: "Label KinD Cluster: '{{cluster_name}}' Cluster Nodes"
   k8s:
     state: present
