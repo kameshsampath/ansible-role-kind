@@ -9,7 +9,6 @@
   vars:
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
     cluster_name: vanilla
-    deploy_ingress: False
 
   roles:
     - role: kameshsampath.kind

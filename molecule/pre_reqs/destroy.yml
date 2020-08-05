@@ -5,11 +5,11 @@
 
   vars:
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
-    instance: molecule-kind-prereqs 
+    instance: molecule-kind-prereqs
 
   tasks:
-    - name: "Destroy Test Environment {{preq_docker_container_name}}"
+    - name: "Destroy Test Environment {{ preq_docker_container_name }}"
       docker_container:
-        name: '{{instance}}' 
+        name: '{{ instance }}'
         force_kill: True
         state: absent

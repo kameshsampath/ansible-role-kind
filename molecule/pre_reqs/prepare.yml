@@ -5,28 +5,28 @@
 
   vars:
     ansible_python_interpreter: '{{ ansible_playbook_python }}'
-    instance: molecule-kind-prereqs 
+    instance: molecule-kind-prereqs
 
   tasks:
 
-    - name: 'Create Test Environment: {{instance}}'
+    - name: 'Create Test Environment: {{ instance }}'
       docker_container:
-          name: "{{instance}}"
+          name: "{{ instance }}"
           privileged: true
           image: quay.io/kameshsampath/ansible-kubernetes-centos8
-          hostname: "{{instance}}"
+          hostname: "{{ instance }}"
           volumes:
             - /sys/fs/cgroup:/sys/fs/cgroup:ro
-          command: 
+          command:
             - "tail -f /dev/null"
           pull: yes
-      
+
     - name: "Get container info"
       docker_container_info:
-          name: "{{instance}}"
+          name: "{{ instance }}"
       register: container_result
 
-    - name: "Check {{instance}} is running"
+    - name: "Check {{ instance }} is running"
       fail:
-        msg: "Test environment {{instance}} failed to run"
+        msg: "Test environment {{ instance }} failed to run"
       when: container_result.container.State.Status != 'running'

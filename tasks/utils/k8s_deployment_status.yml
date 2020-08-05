@@ -1,10 +1,12 @@
 ---
-- name: 'Wait for Deployment {{deployment_name}}'
+- name: 'Wait for Deployment {{ deployment_name }}'
   k8s_info:
     kind: Deployment
-    name: '{{deployment_name}}'
-    namespace: '{{deployment_namespace}}'
+    name: '{{ deployment_name }}'
+    namespace: '{{ deployment_namespace }}'
   register: webhook_result
   until: ( webhook_result.resources[0].status.availableReplicas is defined) and (webhook_result.resources[0].status.availableReplicas == webhook_result.resources[0].status.replicas)
   retries: 18
   delay: 10
+  tags:
+    - skip_ansible_lint

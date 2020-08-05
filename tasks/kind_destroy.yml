@@ -1,0 +1,21 @@
+---
+
+- name: "Delete KinD cluster {{ cluster_name }}"
+  command:
+    argv:
+      - "{{ kind_binary }}"
+      - delete
+      - cluster
+      - --name={{ cluster_name }}
+  register: delete_test_res
+  changed_when: False
+
+- name: Fail when not cleaned
+  fail:
+    msg: "Error while deleting test resources"
+  when: delete_test_res.rc != 0
+
+- name: "Remove KinD config directory for cluster {{ cluster_name }}"
+  file:
+    path: "{{ kind_home_dir + '/' + cluster_name }}"
+    state: absent

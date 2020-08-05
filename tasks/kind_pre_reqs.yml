@@ -1,11 +1,11 @@
 ---
 - name: Create KinD Home Dir
   file:
-    state: directory 
-    name: "{{item}}"
+    state: directory
+    name: "{{ item }}"
   loop:
-    - "{{kind_home_dir}}"
-    - "{{kind_home_dir}}/{{cluster_name}}"
+    - "{{ kind_home_dir }}"
+    - "{{ kind_home_dir }}/{{ cluster_name }}"
 
 - name: Check if KinD is installed
   command:
@@ -18,20 +18,20 @@
 
 - name: Set KinD macOS download binary
   set_fact:
-      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{kind_version}}/kind-darwin-amd64"
+      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{ kind_version }}/kind-darwin-amd64"
   when: kind_result.rc != 0 and ansible_os_family == "Darwin"
 
 - name: Set KinD Linux download binary
   set_fact:
-      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{kind_version}}/kind-linux-amd64"
+      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{ kind_version }}/kind-linux-amd64"
   when: kind_result.rc != 0 and (ansible_os_family == "RedHat" or ansible_os_family == "CentOS" or ansible_os_family == "Debian")
 
 - name: Set KinD Windows download binary
   set_fact:
-      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{kind_version}}/kind-windows-amd64"
+      kind_download_binary: "https://github.com/kubernetes-sigs/kind/releases/download/{{ kind_version }}/kind-windows-amd64"
   when: kind_result.rc != 0 and ansible_os_family == "Windows"
 
-- name: Create user local bin directory 
+- name: Create user local bin directory
   file:
     path: /usr/local/bin
     state: directory
@@ -41,7 +41,7 @@
 
 - name: Download KinD binary
   get_url:
-    url: "{{kind_download_binary}}"
+    url: "{{ kind_download_binary }}"
     dest: "/usr/local/bin/kind"
     mode: "0755"
   become: yes

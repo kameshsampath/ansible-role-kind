@@ -5,7 +5,7 @@
 
   collections:
     - community.kubernetes
-    
+
   vars:
    ansible_python_interpreter: '{{ ansible_playbook_python }}'
    cluster_name: molecule
@@ -16,7 +16,7 @@
 
   tasks:
 
-  - import_tasks: ../common/verify_tasks.yml
+  - import_tasks: ../common/tasks/verify.yml
 
 - name: Destroy test resources
   import_playbook: destroy.yml

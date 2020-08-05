@@ -8,20 +8,22 @@
     cluster_name: molecule
     kind_home_dir: "/tmp/kind_test"
   tasks:
-    - name: "Delete KinD cluster {{cluster_name}}"
+    - name: "Delete KinD cluster {{ cluster_name }}"
       command:
         argv:
           - kind
-          - delete 
+          - delete
           - cluster
-          - --name={{cluster_name}}
+          - --name={{ cluster_name }}
+      changed_when: False
       register: delete_test_res
-    - name: Fail when not cleaned 
+
+    - name: Fail when not cleaned
       fail:
         msg: "Error while deleting test resources"
       when: delete_test_res.rc != 0
-    - name: Remove KinD test home directory 
+
+    - name: Remove KinD test home directory
       file:
-        path: "{{kind_home_dir}}"
+        path: "{{ kind_home_dir }}"
         state: absent
-      

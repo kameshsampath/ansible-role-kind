@@ -1,6 +1,6 @@
 ---
 cluster_name: kind
-kind_create: True
+kind_create: False
 kind_destroy: False
 kind_version: v0.8.1
 kind_home_dir: '{{ansible_env.HOME}}/.kind'
@@ -8,14 +8,7 @@ kind_cluster_config: "kind-cluster-config.yml"
 kind_custom_registry: True
 container_registry_name: 'kind-registry'
 container_registry_port: 5000
-deploy_knative: False
-knative_version: v0.16.0
-knative_eventing_version: v0.16.0
-knative_serving_version: v0.16.0
-deploy_ingress: True
-ingress_namespace: contour-system
-ingress_manifest: https://projectcontour.io/quickstart/contour.yaml
-deploy_tekton: False
 extra_port_mappings:
   - '0.0.0.0:80:80'
   - '0.0.0.0:443:443'
+

@@ -2,18 +2,20 @@
 ###################################
 # Pre-req
 ###################################
-- name: 'Check Pre-req'
-  include_tasks: pre_reqs.yml
+- name: 'Check KinD Pre-req'
+  include_tasks: kind_pre_reqs.yml
+  when: kind_create
+
 ###################################
 # Create
 ###################################
-- name: 'Create KinD {{cluster_name}} Cluster'
-  include_tasks: create.yml
+- name: 'Create KinD {{ cluster_name }} Cluster'
+  include_tasks: kind_create.yml
   when: kind_create
 
 ###################################
 # Destroy
 ###################################
-- name: 'Destroy KinD {{cluster_name}} Cluster'
-  include_tasks: destroy.yml
+- name: 'Destroy KinD {{ cluster_name }} Cluster'
+  include_tasks: kind_destroy.yml
   when: kind_destroy

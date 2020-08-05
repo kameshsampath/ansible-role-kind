@@ -1,4 +1,0 @@
-FROM geerlingguy/docker-centos8-ansible
-
-RUN pip3 install -U openshift jmespath \
-   && ansible-galaxy collection install community.kubernetes

@@ -9,6 +9,6 @@
     kind_destroy: False
     kind_version: v0.8.1
     kind_home_dir: "/tmp/kind_test"
-    
+
   tasks:
    - import_tasks: ../common/tasks/verify.yml

@@ -7,8 +7,8 @@
     kind_create: False
     kind_destroy: False
     kind_version: v0.8.1
-    kind_home_dir: '{{ansible_env.HOME}}/.kind'
-    
+    kind_home_dir: '{{ ansible_env.HOME }}/.kind'
+
   tasks:
    - import_tasks: ../common/tasks/verify.yml
 

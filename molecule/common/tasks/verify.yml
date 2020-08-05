@@ -13,14 +13,14 @@
 - name: Get KinD Version
   command:
     argv:
-      - '{{kind_dir_result.stat.path}}'
+      - '{{ kind_dir_result.stat.path }}'
       - version
   register: kind_version_out
   changed_when: False
 
 - name: Verify KinD version
   assert:
-    that: "{{ kind_version_out.stdout is regex('^kind ' + kind_version + '.*')}}" 
+    that: "{{ kind_version_out.stdout is regex('^kind ' + kind_version + '.*') }}"
 
 - name: Get Kubernetes Nodes
   k8s_info:
