@@ -11,4 +11,3 @@ container_registry_port: 5000
 extra_port_mappings:
   - '0.0.0.0:80:80'
   - '0.0.0.0:443:443'
-

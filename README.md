@@ -3,15 +3,6 @@ Ansible role for KinD
 
 Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. 
 
-The role can also be used to install and configure:
-
-- [x] Default [Ingress](https://kind.sigs.k8s.io/docs/user/ingress/#contour) for KinD
-
-- [x] Deploys a local container registry
-
-- [x] [Knative](https://knative.dev), both Serving and Eventing
-
-- [ ] [Tekton](https://tekton.dev)
 
 Requirements
 ------------
@@ -24,7 +15,6 @@ Requirements
 pip3 install \
   -r https://raw.githubusercontent.com/kameshsampath/ansible-role-kind/master/requirements.txt
 ansible-galaxy role install kameshsampath.kind
-ansible-galaxy collection install community.kubernetes
 ```
 __NOTE__: For Windows its recommended to use Windows Subsystem for Linux (WSL)
 
@@ -42,14 +32,6 @@ Role Variables
 | kind_custom_registry| Deploy a KinD registry | True |
 | container_registry_name | The container registry name | kind-registry |
 | container_registry_port | The container registry port | 5000 |
-| deploy_knative | Deploy Knative | False |
-| knative_version | The Knative version | v0.16.0 |
-| knative_serving_version | The Knative Serving version | v0.16.0 |
-| knative_eventing_version | The Knative Eventing version | v0.16.0 |
-| deploy_ingress | Deploy Ingress | True |
-| ingress_namespace | The namespace for Contour Ingress | contour-system |
-| ingress_namespace | The namespace for Contour Ingress | contour-system |
-| ingress_manifest  | The Contour Ingress manifest file  | https://projectcontour.io/quickstart/contour.yaml |
 |extra_port_mappings| Extra Port Mappings for KinD. A YAML list of format `listen-address:hostPort:containerPort` | '0.0.0.0:80:80', '0.0.0.0:443:443' |
 
 
@@ -77,7 +59,6 @@ Testing
 
 Requirements
 ------------
-- [Vagrant](https://www.vagrantup.com)
 - Extra Python modules
 ```shell
 pip3 install \
@@ -97,17 +78,5 @@ molecule test -s pre_reqs
 * pre_reqs_local
 ```shell
 molecule test  -s pre_reqs_local
-```
-
-* Knative
-```shell
-molecule test  -s deploy_knative
-```
-* Clean machine Test
-
-This test run on clean vm (Centos8) using vagrant. It will run all the tests end to end and verify the same.
-
-```shell
-molecule test  -s vm
 ```
 
