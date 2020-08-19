@@ -5,6 +5,7 @@ kind_destroy: False
 kind_version: v0.8.1
 kind_home_dir: '{{ansible_env.HOME}}/.kind'
 kind_cluster_config: "kind-cluster-config.yml"
+kind_create_config: True
 kind_custom_registry: True
 container_registry_name: 'kind-registry'
 container_registry_port: 5000

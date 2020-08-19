@@ -4,7 +4,6 @@
 ###################################
 - name: 'Check KinD Pre-req'
   include_tasks: kind_pre_reqs.yml
-  when: kind_create
 
 ###################################
 # Create

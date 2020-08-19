@@ -12,12 +12,20 @@ nodes:
       hostPort: {{ m.split(':')[1] }}
       listenAddress: {{ m.split(':')[0] }}
   {% endfor %}
-containerdConfigPatches:
+{% endif %}
 {% if kind_custom_registry %}
+containerdConfigPatches:
   - |-
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:{{container_registry_port}}"]
       endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{container_registry_name}}:{{container_registry_port}}"]
       endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
-{% endif %}
+      {% if kind_custom_registry_aliases %}
+      {% for a in kind_custom_registry_aliases %}
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."{{ a }}"]
+      endpoint = ["http://{{container_registry_name}}:{{container_registry_port}}"]
+      {% endfor %}
+      {% endif  %}
+{% else %}
+containerdConfigPatches: {}
 {% endif %}
