@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       
       # Create a release, or update the release PR
-      - uses: GoogleCloudPlatform/release-please-action@v2.5.5
+      - uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
