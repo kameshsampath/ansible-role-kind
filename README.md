@@ -1,6 +1,6 @@
 # Ansible role for KinD
 
-Ansible to create [KinD](https://kind.sigs.k8s.io) cluster. 
+Ansible to create [KinD](https://kind.sigs.k8s.io) cluster.
 
 ## Requirements
 
@@ -28,10 +28,10 @@ __NOTE__: For Windows its recommended to use Windows Subsystem for Linux (WSL)
 | kind_create_config | Create Cluster Config, when this attribute is `False`, then playbook expect the runner to provide `kind_cluster_config_file` - the absolute ath to the KinD cluster configuration | True |
 | kind_cluster_config| The KinD cluster config file | $HOME/.kind/{{cluster_name}}/kind-cluster-config.yml |
 | kind_custom_registry| Deploy a KinD registry | True |
-| kind_custom_registry_aliases | List of extra aliases that can be used as extra alaises to the custom registry e.g. example.com, example.org | |
+| kind_custom_registry_aliases | List of extra aliases that can be used as extra alaises to the custom registry e.g. example.com, example.org | example.com,example.org,test.com,test.org|
 | container_registry_name | The container registry name | kind-registry |
 | container_registry_port | The container registry port | 5000 |
-| extra_port_mappings | Extra Port Mappings for KinD. A YAML list of format `listen-address:hostPort:containerPort` | '0.0.0.0:80:80', '0.0.0.0:443:443' |
+| extra_port_mappings | Extra Port Mappings for KinD. A YAML list of format`listen-address:hostPort:containerPort` | '0.0.0.0:80:80', '0.0.0.0:443:443' |
 
 ## Example Playbooks
 
