@@ -51,8 +51,6 @@ The [examples](https://github.com/kameshsampath/ansible-role-kind/tree/master/ex
 
 ## Testing
 
-## Requirements
-
 - Extra Python modules
 
 ```shell
