@@ -2,7 +2,6 @@
 cluster_name: kind
 kind_create: False
 kind_destroy: False
-kind_version: v0.9.0
 kind_home_dir: '{{ansible_env.HOME}}/.kind'
 kind_cluster_config: "kind-cluster-config.yml"
 kind_create_config: True
@@ -12,7 +11,7 @@ kind_custom_registry_aliases:
 - example.org
 - test.com
 - test.org
-container_registry_name: 'kind-registry'
+container_registry_name: 'kind-registry.local'
 container_registry_port: 5000
 extra_port_mappings:
   - '0.0.0.0:80:80'

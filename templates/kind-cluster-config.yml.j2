@@ -4,15 +4,20 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
-- role: worker
-{% if deploy_ingress %}
+  ## make ingress controller deployed on control plane only  
+  kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
   extraPortMappings:
   {% for m in extra_port_mappings %}
     - containerPort: {{ m.split(':')[2] }}
       hostPort: {{ m.split(':')[1] }}
       listenAddress: {{ m.split(':')[0] }}
   {% endfor %}
-{% endif %}
+- role: worker
 {% if kind_custom_registry %}
 containerdConfigPatches:
   - |-

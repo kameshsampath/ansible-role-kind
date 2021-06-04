@@ -50,6 +50,7 @@
     network_mode: kind
     published_ports:
       - '0.0.0.0:{{ container_registry_port }}:5000'
+
 - name: "Label KinD Cluster: '{{ cluster_name }}' Cluster Nodes"
   k8s:
     state: present

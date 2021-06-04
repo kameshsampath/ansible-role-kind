@@ -1,4 +1,16 @@
 ---
+- name: Get latest KinD release
+  uri:
+    url: https://api.github.com/repos/kubernetes-sigs/kind/releases/latest
+    return_content: yes
+  register: kind_release
+  when: kind_version is not defined 
+
+- name: Set KinD version
+  set_fact:
+    kind_version: "{{ kind_release.json.tag_name }}"
+  when: kind_version is not defined
+
 ###################################
 # Pre-req
 ###################################
