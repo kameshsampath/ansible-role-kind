@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.1](https://www.github.com/kameshsampath/ansible-role-kind/compare/v0.3.0...v0.3.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* get latest kind using GH releases ([71a6f2b](https://www.github.com/kameshsampath/ansible-role-kind/commit/71a6f2bdb832ff18a8b3c51731b12b46f3aca0a0))
+
 ## [0.3.0](https://www.github.com/kameshsampath/ansible-role-kind/compare/v0.2.0...v0.3.0) (2020-11-24)
 
 
