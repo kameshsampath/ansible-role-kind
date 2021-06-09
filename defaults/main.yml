@@ -1,11 +1,13 @@
 ---
 cluster_name: kind
-kind_create: False
-kind_destroy: False
+kind_create: false
+kind_destroy: false
+# valid values are ipv4, ipv6, dual
+kind_ip_family: ipv4
 kind_home_dir: '{{ansible_env.HOME}}/.kind'
 kind_cluster_config: "kind-cluster-config.yml"
-kind_create_config: True
-kind_custom_registry: True
+kind_create_config: true
+kind_custom_registry: true
 kind_custom_registry_aliases:
 - example.com
 - example.org

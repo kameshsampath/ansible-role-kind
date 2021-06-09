@@ -1,0 +1,20 @@
+---
+- name: vanilla
+  hosts: localhost
+  connection: local
+
+  collections:
+    - community.kubernetes
+
+  vars:
+    ansible_python_interpreter: '{{ ansible_playbook_python }}'
+    cluster_name: vanilla
+    # valid values are ipv4, ipv6, dual
+    kind_ip_family: ipv6
+    # Create Cluster
+    kind_create: true
+    # Destroy Cluster
+    kind_destroy: false
+
+  roles:
+    - role: kameshsampath.kind
