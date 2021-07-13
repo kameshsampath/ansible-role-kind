@@ -1,19 +1,19 @@
 ---
 - name: "Check if {{ cluster_name }} already exists"
   docker_container_info:
-    name: "{{ cluster_name + '-control-plane' }}"
+    name: "{{ cluster_name }}-control-plane"
   register: cluster_check_result
 
 - name: Create KinD Config
   template:
-    dest: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config }}"
+    dest: "{{ kind_home_dir }}/{{ cluster_name }}/{{ kind_cluster_config }}"
     src: 'kind-cluster-config.yml.j2'
     mode: "755"
   when: kind_create_config
 
 - name: "Set {{ cluster_name }} config file"
   set_fact:
-    kind_cluster_config_file: "{{ kind_home_dir + '/' + cluster_name + '/' + kind_cluster_config }}"
+    kind_cluster_config_file: "{{ kind_home_dir }}/{{ cluster_name }}/{{ kind_cluster_config }}"
   when: kind_create_config
 
 - name: "Start KinD Cluster: '{{ cluster_name }}'"
